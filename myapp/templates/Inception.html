@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %} Welcome {% endblock %}
+
+{% block content %}
+
+
+<div class="image" style="text-align: center;">
+    <!-- Display the image with an ID for JavaScript -->
+    <img id="image-preview" src="{% if obj %}{{ obj.image.url }}{% endif %}" alt="" width="550px">
+</div>
+
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-6 my-3">
+        {% if txt %}
+        <div class="form-group">
+            <label for="exampleInputEmail1">Question:</label>
+            <input type="text" class="form-control" name="text" aria-describedby="emailHelp" placeholder="Enter a question" value="{{request.POST.text}}">
+        </div>
+        <h1 style="text-align: center;">{{txt}}</h1>
+        <a href="."><button style="border: 1px solid #C0C0C0;" class="btn btn-light">Try another<sub><ion-icon name="send-outline" style="font-size: 18px;"></ion-icon></sub></button></a>
+        {% endif %}
+        
+    {% if not txt %}
+    <h3 style="text-align: center;">Model CNN Inception</h3>
+<form method="post" enctype="multipart/form-data"><!--enctype is required for image-->
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="exampleInputEmail1">Insert your image here:</label>
+        <input type="file" class="form-control" id="image-input" name="image">
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Enter Question:</label>
+        <input type="text" class="form-control" name="text" aria-describedby="emailHelp" placeholder="Enter a question" value="{{request.POST.text}}">
+    </div>
+      {% if form.errors or form.non_field_errors %}
+      <div class="mb-3 p-6 bg-red-100 rounded-xl">
+          {% for field in form %}
+              {{ field.errors }}
+          {% endfor %}
+          {{ form.non_field_errors }}
+      </div>
+  {% endif %}
+    <button style="border: 1px solid #C0C0C0; margin-top: 8px;"  type="submit" class="btn btn-light">Submit <sub><ion-icon name="send-outline" style="font-size: 18px;"></ion-icon></sub></button>
+</form>
+  {% endif %}
+
+</div>
+</div>
+
+<!-- JavaScript for image preview -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get references to the image and input elements
+    const imagePreview = document.getElementById('image-preview');
+    const imageInput = document.getElementById('image-input');
+
+    // Listen for changes to the input field
+    imageInput.addEventListener('change', function() {
+        if (imageInput.files && imageInput.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // Update the image source with the selected image
+                imagePreview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(imageInput.files[0]);
+        }
+    });
+});
+</script>
+
+{% endblock %}
